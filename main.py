@@ -157,6 +157,7 @@ def get_meal_by_id(meal_id):
         return jsonify(-5), 404
     return jsonify(meal)
 
+#TODO: FIX THIS FUNCTION get_meal_by_name is not working
 #get meal by name
 @app.route('/meals/<string:meal_name>', methods=['GET'])
 def get_meal_by_name(meal_name):
@@ -226,11 +227,23 @@ def call_api_ninjas(dish_name):
     if (response.text == '[]'):
         return -3
 
-    dish = {'name': response.json()[0]['name']
-            , 'cal': response.json()[0]['calories']
-            , 'size': response.json()[0]['serving_size_g']
-            , 'sodium': response.json()[0]['sodium_mg']
-            , 'sugar': response.json()[0]['sugar_g']}
+    total_calories = 0
+    total_serving_size_g = 0
+    total_sodium_mg = 0
+    total_sugar_g = 0
+
+    for dish in response.json():
+        total_calories += dish['calories']
+        total_serving_size_g += dish['serving_size_g']
+        total_sodium_mg += dish['sodium_mg']
+        total_sugar_g += dish['sugar_g']
+
+    dish = {'name': dish_name
+            , 'cal': total_calories
+            , 'size': total_serving_size_g
+            , 'sodium': total_sodium_mg
+            , 'sugar': total_sugar_g
+            }
     return dish
 
 
